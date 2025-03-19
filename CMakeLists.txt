@@ -1,133 +1,24 @@
-# SOURCE_FROM:
-# https://github.com/ValorZard/raylib-jolt/blob/master/CMakeLists.txt
-
 cmake_minimum_required(VERSION 3.26)
 project(kalan CXX)
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-if(CMAKE_EXPORT_COMPILE_COMMANDS)
-  set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES 
-      ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
-endif()
 
-# Requires C++ 20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-include(FetchContent)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES
+    ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 set(FETCHCONTENT_QUIET FALSE)
 
-### LIB: raylib
-set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE) # don't build the supplied examples
-set(BUILD_GAMES    OFF CACHE BOOL "" FORCE) # don't build the supplied example games
-find_package(raylib QUIET)
-if (NOT raylib_FOUND)
-    FetchContent_Declare(
-        raylib
-        GIT_REPOSITORY https://github.com/raysan5/raylib.git
-        GIT_TAG 5.5
-        GIT_SHALLOW 1
-    )
-    FetchContent_MakeAvailable(raylib)
-endif()
-###
+add_subdirectory(third_party)
 
-### LIB: raylib-cpp
-find_package(raylib_cpp QUIET)
-if (NOT raylib_cpp_FOUND)
-    FetchContent_Declare(
-        raylib_cpp
-        GIT_REPOSITORY https://github.com/RobLoach/raylib-cpp.git
-        GIT_TAG v5.5.0
-    )
-    FetchContent_MakeAvailable(raylib_cpp)
-endif()
-###
+file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_LIST_DIR}/sources/*.c"
+    "${CMAKE_CURRENT_LIST_DIR}/sources/*.cpp")
+set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/sources/")
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
 
-### LIB: assimp
-find_package(assimp QUIET)
-if (NOT assimp_FOUND)
-    FetchContent_Declare(
-        assimp
-        GIT_REPOSITORY https://github.com/assimp/assimp.git
-        GIT_TAG v5.4.3
-    )
-    FetchContent_MakeAvailable(assimp)
-endif()
-###
-
-### LIB: entt
-find_package(entt QUIET)
-if (NOT entt_FOUND)
-    FetchContent_Declare(
-        entt
-        GIT_REPOSITORY "https://github.com/skypjack/entt.git"
-        GIT_TAG v3.14.0
-    )
-    FetchContent_MakeAvailable(entt)
-endif()
-###
-
-### LIB: jolt
-set(DOUBLE_PRECISION OFF)
-set(GENERATE_DEBUG_SYMBOLS ON)
-set(CROSS_PLATFORM_DETERMINISTIC OFF)
-
-# When turning this option on, the library will be compiled with interprocedural optimizations enabled, also known as link-time optimizations or link-time code generation.
-# Note that if you turn this on you need to use SET_INTERPROCEDURAL_OPTIMIZATION() or set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON) to enable LTO specificly for your own project as well.
-# If you don't do this you may get an error: /usr/bin/ld: libJolt.a: error adding symbols: file format not recognized
-set(INTERPROCEDURAL_OPTIMIZATION ON)
-
-# When turning this on, in Debug and Release mode, the library will emit extra code to ensure that the 4th component of a 3-vector is kept the same as the 3rd component 
-# and will enable floating point exceptions during simulation to detect divisions by zero. 
-# Note that this currently only works using MSVC. Clang turns Float2 into a SIMD vector sometimes causing floating point exceptions (the option is ignored).
-set(FLOATING_POINT_EXCEPTIONS_ENABLED OFF)
-
-# Number of bits to use in ObjectLayer. Can be 16 or 32.
-set(OBJECT_LAYER_BITS 16)
-
-# Select X86 processor features to use, by default the library compiles with AVX2, if everything is off it will be SSE2 compatible.
-set(USE_SSE4_1 ON)
-set(USE_SSE4_2 ON)
-set(USE_AVX ON)
-set(USE_AVX2 ON)
-set(USE_AVX512 OFF)
-set(USE_LZCNT ON)
-set(USE_TZCNT ON)
-set(USE_F16C ON)
-set(USE_FMADD ON)
-
-# dirty hack to fix the problem of Jolt not linking properly 
-# Raylib uses dynamic Runtime Library transitively from glfw, and Jolt uses static runtime library unless it's windows store application.
-# in the future, I hope to figure out a better solution
-set(WINDOWS_STORE ON)
-# Include Jolt
-FetchContent_Declare(
-        JoltPhysics
-        GIT_REPOSITORY "https://github.com/jrouwe/JoltPhysics"
-		        SOURCE_SUBDIR "Build"
-)
-FetchContent_MakeAvailable(JoltPhysics)
-###
-
-
-# PROJECT:
-SET_INTERPROCEDURAL_OPTIMIZATION() # Needed by some lto stuff per comment above?
-
-if (EMSCRIPTEN)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_GLFW=3 -s ASSERTIONS=1 -s WASM=1 -s ASYNCIFY")
-    set(CMAKE_EXECUTABLE_SUFFIX ".html") # This line is used to set your executable to build with the emscripten html template so that you can directly open it.
-endif ()
-
-# Adding our source files
-file(GLOB_RECURSE PROJECT_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_LIST_DIR}/sources/*.c" "${CMAKE_CURRENT_LIST_DIR}/sources/*.cpp") # Define PROJECT_SOURCES as a list of all source files
-set(PROJECT_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/sources/") # Define PROJECT_INCLUDE to be the path to the include directory of the project
-file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}) # Copy the assets folder to the binary directory
-
-# Declaring our executable
 add_executable(${PROJECT_NAME})
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20) # we want to use c++ along with c99
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_20)
 target_sources(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE} ${JoltPhysics_SOURCE_DIR}/..)
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib raylib_cpp assimp EnTT::EnTT Jolt)

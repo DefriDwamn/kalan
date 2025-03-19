@@ -1,0 +1,5 @@
+add_subdirectory(raylib)
+add_subdirectory(raylib-cpp)
+add_subdirectory(assimp)
+add_subdirectory(entt)
+add_subdirectory(jolt)
