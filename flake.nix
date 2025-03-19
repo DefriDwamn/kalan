@@ -25,12 +25,15 @@
           # Build with web
           pkgs.emscripten
 
+          # Tooling and compiler
           pkgs.bear
           pkgs.cmake
+          pkgs.cmake-language-server
           pkgs.zlib
 
           clang_19
         ];
+
       };
     };
 }
