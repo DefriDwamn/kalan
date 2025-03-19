@@ -32,7 +32,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+    
+    - name: Cache CMake dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ${{ github.workspace }}/third_party/raylib
+          ${{ github.workspace }}/third_party/assimp
+          ${{ github.workspace }}/third_party/entt
+          ${{ github.workspace }}/third_party/joltphysics
+        key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-dependencies-
+          
     - name: Set reusable strings
       id: strings
       shell: bash
