@@ -36,7 +36,8 @@ int main() {
     {
       window.ClearBackground(RAYWHITE);
 
-      // 3D Drawing camera.BeginMode();
+      // 3D Drawing 
+      camera.BeginMode();
       {
         player.Draw();
         DrawGrid(100, 1);
