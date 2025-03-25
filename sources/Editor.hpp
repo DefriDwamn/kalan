@@ -17,6 +17,7 @@ class Editor {
 
   void Draw();
   void ToggleShow();
+  bool IsVisible();
 
  private:
   float fastStep = 10.f;
@@ -28,6 +29,7 @@ class Editor {
   bool show;
 };
 
+bool Editor::IsVisible() { return show; }
 void Editor::ToggleShow() { show = !show; }
 
 void Editor::Draw() {
