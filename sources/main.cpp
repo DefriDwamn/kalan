@@ -1,4 +1,5 @@
 #include "Editor.hpp"
+#include "Keyboard.hpp"
 #include "Player.hpp"
 #include "raylib.h"
 
@@ -14,31 +15,35 @@ int main() {
   Editor editor(&player);
   rlImGuiSetup(true);
 
-  DisableCursor();
   SetExitKey(0);
 
   while (!window.ShouldClose()) {
-    if (IsKeyPressed(KEY_F11)) {
-      if (IsWindowFullscreen()) {
-        ClearWindowState(FLAG_FULLSCREEN_MODE);
-      } else {
-        SetWindowState(FLAG_FULLSCREEN_MODE);
-      }
+    // Updating
+    if (raylib::Keyboard::IsKeyPressed(KEY_F11)) window.ToggleFullscreen();
+    if (raylib::Keyboard::IsKeyPressed(KEY_F10)) {
+      editor.ToggleShow();
+      if (editor.IsVisible())
+        EnableCursor();
+      else
+        DisableCursor();
     }
 
+    if (!editor.IsVisible()) camera.Update(CameraMode::CAMERA_FIRST_PERSON);
     player.Update();
-    camera.Update(CameraMode::CAMERA_FIRST_PERSON);
-    HideCursor();
 
+    // Drawing
     BeginDrawing();
     {
       window.ClearBackground(RAYWHITE);
-      camera.BeginMode();
+
+      // 3D Drawing camera.BeginMode();
       {
         player.Draw();
         DrawGrid(100, 1);
         DrawCube({0}, 2.0f, 2.0f, 2.0f, YELLOW);
       }
+
+      // 2D Drawing
       camera.EndMode();
       window.DrawFPS(0, 0);
       editor.Draw();
