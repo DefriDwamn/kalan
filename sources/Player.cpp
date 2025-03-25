@@ -1,7 +1,12 @@
 #include <memory>
 
+#include "Matrix.hpp"
 #include "Player.hpp"
+#include "Vector2.hpp"
+#include "Vector3.hpp"
+#include "Vector4.hpp"
 #include "raylib-cpp.hpp"
+#include "raylib.h"
 
 Player::Player(std::unique_ptr<raylib::Model> handsModel,
                raylib::Camera3D* camera = nullptr,
@@ -35,23 +40,33 @@ void Player::UpdateHandsTransform() {
   raylib::Vector3 direction =
       (raylib::Vector3(camera->target) - camera->position).Normalize();
 
-  targetHandsPos = raylib::Vector3(camera->position) + direction;
-  currHandsPos =
-      currHandsPos.Lerp(targetHandsPos, smoothFactor * GetFrameTime());
+  raylib::Vector3 handsPos = raylib::Vector3(camera->position) + direction;
 
-  raylib::Matrix lookAtMatrix =
-      raylib::Matrix::LookAt(currHandsPos, camera->position, {0.0f, 1.0f, 0.0f})
+  raylib::Matrix lookToMatrix =
+      raylib::Matrix::LookAt(handsPos, camera->position, {0.0f, 1.0f, 0.0f})
           .Invert();
+
+  targetHandsRot = raylib::Vector4::FromMatrix(lookToMatrix);
+  currHandsRot =
+      currHandsRot.Slerp(targetHandsRot, smoothFactor * GetFrameTime());
+
+  lookToMatrix = currHandsRot.ToMatrix();
+  lookToMatrix.m12 = handsPos.x;
+  lookToMatrix.m13 = handsPos.y;
+  lookToMatrix.m14 = handsPos.z;
 
   raylib::Matrix rotationMatrix =
       raylib::Matrix::RotateZ(handsRotation.z * DEG2RAD) *
       raylib::Matrix::RotateY(handsRotation.y * DEG2RAD) *
       raylib::Matrix::RotateX(handsRotation.x * DEG2RAD);
 
-  handsModel->transform = rotationMatrix * lookAtMatrix;
+  // Сначала умножаем матрицу трансформации на матрицу передвижения c оффсетом -
+  // и только потом задаем вращение, чтобы модель рук вращалсь вокруг своих осей
   handsModel->transform =
       raylib::Matrix::Translate(handsOffset.x, handsOffset.y, handsOffset.z) *
-      handsModel->transform;
+      lookToMatrix;
+  handsModel->transform =
+      rotationMatrix * raylib::Matrix(handsModel->transform);
 }
 
 void Player::Update() {

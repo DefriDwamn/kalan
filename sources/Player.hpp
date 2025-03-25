@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 
+#include "Vector4.hpp"
 #include "raylib-cpp.hpp"
 
 class Player {
@@ -10,11 +11,11 @@ class Player {
   raylib::Camera3D* camera;
   int speed;
 
-  raylib::Vector3 handsOffset = {-1.1f, -0.7f, 2.0f};
+  raylib::Vector3 handsOffset = {-1.1f, -0.3f, 2.0f};
   raylib::Vector3 handsRotation = {-10.0f, 0.0f, 0.0f};
-  raylib::Vector3 targetHandsPos = {0};
-  raylib::Vector3 currHandsPos = {0};
-  float smoothFactor = 15;
+  raylib::Quaternion targetHandsRot = {0};
+  raylib::Quaternion currHandsRot = {0};
+  float smoothFactor = 50;
   void UpdateHandsTransform();
 
  public:
