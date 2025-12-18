@@ -5,10 +5,10 @@
 #include "raylib-cpp.hpp"
 
 class Player {
- private:
+private:
   raylib::Vector3 position;
   std::unique_ptr<raylib::Model> handsModel;
-  raylib::Camera3D* camera;
+  raylib::Camera3D *camera;
   int speed;
 
   raylib::Vector3 handsOffset = {-1.1f, -0.3f, 2.0f};
@@ -18,14 +18,14 @@ class Player {
   float smoothFactor = 50;
   void UpdateHandsTransform();
 
- public:
-  Player(std::unique_ptr<raylib::Model> model, raylib::Camera3D* camera,
+public:
+  Player(std::unique_ptr<raylib::Model> model, raylib::Camera3D *camera,
          raylib::Vector3 position, int speed);
 
-  void SetCamera(raylib::Camera3D* camera);
+  void SetCamera(raylib::Camera3D *camera);
 
-  void SetHandsOffset(const raylib::Vector3& offset);
-  void SetHandsRotation(const raylib::Vector3& rotation);
+  void SetHandsOffset(const raylib::Vector3 &offset);
+  void SetHandsRotation(const raylib::Vector3 &rotation);
   void SetSmoothFactor(float smooth);
 
   raylib::Vector3 GetHandsOffset() const;

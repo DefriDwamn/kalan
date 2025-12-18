@@ -16,14 +16,15 @@ int main() {
       std::make_unique<raylib::Model>(raylib::MeshUnmanaged::Cube(1., 1., 1.));
   Player player(std::move(playerModel), &camera, {0.}, 10);
 
-  Editor& editor = Editor::GetInstance(&player);
+  Editor &editor = Editor::GetInstance(&player);
   SetExitKey(0);
 
   while (!window.ShouldClose()) {
     // Updating
 
     // entity in InputSystem should update
-    if (raylib::Keyboard::IsKeyPressed(KEY_F11)) window.ToggleFullscreen();
+    if (raylib::Keyboard::IsKeyPressed(KEY_F11))
+      window.ToggleFullscreen();
     if (raylib::Keyboard::IsKeyPressed(KEY_F10)) {
       editor.ToggleShow();
       if (editor.IsVisible())
@@ -34,7 +35,8 @@ int main() {
     //
 
     // entity with TrasformComponent should update
-    if (!editor.IsVisible()) camera.Update(CameraMode::CAMERA_FIRST_PERSON);
+    if (!editor.IsVisible())
+      camera.Update(CameraMode::CAMERA_FIRST_PERSON);
     player.Update();
     //
 

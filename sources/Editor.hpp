@@ -7,33 +7,32 @@
 #include "rlImGui.h"
 
 class Editor {
- public:
-  static Editor& GetInstance(Player* player = nullptr) {
+public:
+  static Editor &GetInstance(Player *player = nullptr) {
     static Editor inst(player);
     return inst;
   }
-  Editor(const Editor&) = delete;
-  Editor& operator=(const Editor&) = delete;
+  Editor(const Editor &) = delete;
+  Editor &operator=(const Editor &) = delete;
 
   void Draw();
   void ToggleShow();
   bool IsVisible();
-  void SetPlayer(Player* player) { this->player = player; }
+  void SetPlayer(Player *player) { this->player = player; }
 
- private:
-  Editor(Player* player)
+private:
+  Editor(Player *player)
       : player(player),
         handsOffset(player ? player->GetHandsOffset() : raylib::Vector3{0}),
         handsRotation(player ? player->GetHandsRotation() : raylib::Vector3{0}),
-        smoothFactor(player ? player->GetSmoothFactor() : 50),
-        show(true) {
+        smoothFactor(player ? player->GetSmoothFactor() : 50), show(true) {
     rlImGuiSetup(true);
   }
   ~Editor() { rlImGuiShutdown(); }
 
   float fastStep = 10.f;
   float step = 1.f;
-  Player* player;
+  Player *player;
   raylib::Vector3 handsOffset;
   raylib::Vector3 handsRotation;
   float smoothFactor;
@@ -44,7 +43,8 @@ inline bool Editor::IsVisible() { return show; }
 inline void Editor::ToggleShow() { show = !show; }
 
 inline void Editor::Draw() {
-  if (!show) return;
+  if (!show)
+    return;
 
   rlImGuiBegin();
   if (ImGui::Begin("Player Settings")) {

@@ -9,20 +9,18 @@
 #include "raylib.h"
 
 Player::Player(std::unique_ptr<raylib::Model> handsModel,
-               raylib::Camera3D* camera = nullptr,
+               raylib::Camera3D *camera = nullptr,
                raylib::Vector3 position = {0.}, int speed = 10)
-    : handsModel(std::move(handsModel)),
-      camera(camera),
-      position(position),
+    : handsModel(std::move(handsModel)), camera(camera), position(position),
       speed(speed) {}
 
-void Player::SetCamera(raylib::Camera3D* camera) { this->camera = camera; }
+void Player::SetCamera(raylib::Camera3D *camera) { this->camera = camera; }
 
-void Player::SetHandsOffset(const raylib::Vector3& offset) {
+void Player::SetHandsOffset(const raylib::Vector3 &offset) {
   handsOffset = offset;
 }
 
-void Player::SetHandsRotation(const raylib::Vector3& rotation) {
+void Player::SetHandsRotation(const raylib::Vector3 &rotation) {
   handsRotation = rotation;
 }
 
@@ -35,7 +33,8 @@ raylib::Vector3 Player::GetHandsRotation() const { return handsRotation; }
 float Player::GetSmoothFactor() const { return smoothFactor; }
 
 void Player::UpdateHandsTransform() {
-  if (!camera || !handsModel) return;
+  if (!camera || !handsModel)
+    return;
 
   raylib::Vector3 direction =
       (raylib::Vector3(camera->target) - camera->position).Normalize();
@@ -47,8 +46,9 @@ void Player::UpdateHandsTransform() {
           .Invert();
 
   targetHandsRot = raylib::Vector4::FromMatrix(lookToMatrix);
-  currHandsRot =
-      currHandsRot.Slerp(targetHandsRot, smoothFactor * GetFrameTime());
+  // currHandsRot =
+  //     currHandsRot.Slerp(targetHandsRot, smoothFactor * GetFrameTime());
+  currHandsRot = targetHandsRot;
 
   lookToMatrix = currHandsRot.ToMatrix();
   lookToMatrix.m12 = handsPos.x;
@@ -70,11 +70,13 @@ void Player::UpdateHandsTransform() {
 }
 
 void Player::Update() {
-  if (!camera) return;
+  if (!camera)
+    return;
   UpdateHandsTransform();
 }
 
 void Player::Draw() {
-  if (!camera || !handsModel) return;
+  if (!camera || !handsModel)
+    return;
   handsModel->Draw({0}, 1.0f, RED);
 }
