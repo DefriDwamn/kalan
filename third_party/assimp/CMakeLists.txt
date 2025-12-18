@@ -3,7 +3,7 @@ set(FETCHCONTENT_BASE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 include(FetchContent)
 
 find_package(assimp QUIET)
-if (NOT assimp_FOUND)
+if(NOT assimp_FOUND)
     FetchContent_Declare(
         assimp
         GIT_REPOSITORY https://github.com/assimp/assimp.git
@@ -11,3 +11,7 @@ if (NOT assimp_FOUND)
     )
     FetchContent_MakeAvailable(assimp)
 endif()
+
+# Fix compiling issues
+target_compile_options(assimp PRIVATE -Wno-nontrivial-memcall)
+target_compile_options(assimp PRIVATE -Wno-unknown-pragmas)
