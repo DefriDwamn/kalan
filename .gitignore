@@ -3,6 +3,7 @@ build
 .helix/
 .clangd
 
+assets
 third_party/*
 !third_party/jolt
 !third_party/assimp

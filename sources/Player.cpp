@@ -8,9 +8,8 @@
 #include "raylib-cpp.hpp"
 #include "raylib.h"
 
-Player::Player(std::unique_ptr<raylib::Model> handsModel,
-               raylib::Camera3D *camera = nullptr,
-               raylib::Vector3 position = {0.}, int speed = 10)
+Player::Player(std::shared_ptr<raylib::Model> handsModel,
+               raylib::Camera3D *camera, raylib::Vector3 position, int speed)
     : handsModel(std::move(handsModel)), camera(camera), position(position),
       speed(speed) {}
 
@@ -24,13 +23,9 @@ void Player::SetHandsRotation(const raylib::Vector3 &rotation) {
   handsRotation = rotation;
 }
 
-void Player::SetSmoothFactor(float smooth) { smoothFactor = smooth; }
-
 raylib::Vector3 Player::GetHandsOffset() const { return handsOffset; }
 
 raylib::Vector3 Player::GetHandsRotation() const { return handsRotation; }
-
-float Player::GetSmoothFactor() const { return smoothFactor; }
 
 void Player::UpdateHandsTransform() {
   if (!camera || !handsModel)
@@ -46,8 +41,6 @@ void Player::UpdateHandsTransform() {
           .Invert();
 
   targetHandsRot = raylib::Vector4::FromMatrix(lookToMatrix);
-  // currHandsRot =
-  //     currHandsRot.Slerp(targetHandsRot, smoothFactor * GetFrameTime());
   currHandsRot = targetHandsRot;
 
   lookToMatrix = currHandsRot.ToMatrix();

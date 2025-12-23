@@ -1,13 +1,13 @@
 #pragma once
-#include <memory>
-
+#include "Model.hpp"
 #include "Vector4.hpp"
 #include "raylib-cpp.hpp"
+#include <memory>
 
 class Player {
 private:
   raylib::Vector3 position;
-  std::unique_ptr<raylib::Model> handsModel;
+  std::shared_ptr<raylib::Model> handsModel;
   raylib::Camera3D *camera;
   int speed;
 
@@ -15,22 +15,20 @@ private:
   raylib::Vector3 handsRotation = {-10.0f, 0.0f, 0.0f};
   raylib::Quaternion targetHandsRot = {0};
   raylib::Quaternion currHandsRot = {0};
-  float smoothFactor = 50;
   void UpdateHandsTransform();
 
 public:
-  Player(std::unique_ptr<raylib::Model> model, raylib::Camera3D *camera,
-         raylib::Vector3 position, int speed);
+  Player(std::shared_ptr<raylib::Model> handsModel,
+         raylib::Camera3D *camera = nullptr, raylib::Vector3 position = {0.},
+         int speed = 10);
 
   void SetCamera(raylib::Camera3D *camera);
 
   void SetHandsOffset(const raylib::Vector3 &offset);
   void SetHandsRotation(const raylib::Vector3 &rotation);
-  void SetSmoothFactor(float smooth);
 
   raylib::Vector3 GetHandsOffset() const;
   raylib::Vector3 GetHandsRotation() const;
-  float GetSmoothFactor() const;
 
   void Draw();
   void Update();

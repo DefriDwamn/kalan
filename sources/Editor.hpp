@@ -25,7 +25,7 @@ private:
       : player(player),
         handsOffset(player ? player->GetHandsOffset() : raylib::Vector3{0}),
         handsRotation(player ? player->GetHandsRotation() : raylib::Vector3{0}),
-        smoothFactor(player ? player->GetSmoothFactor() : 50), show(true) {
+        show(true) {
     rlImGuiSetup(true);
   }
   ~Editor() { rlImGuiShutdown(); }
@@ -49,7 +49,7 @@ inline void Editor::Draw() {
   rlImGuiBegin();
   if (ImGui::Begin("Player Settings")) {
     ImGui::Text("Hands Offset:");
-    ImGui::PushItemWidth(100);
+    ImGui::PushItemWidth(200);
     if (ImGui::InputFloat("X##handsOffset", &handsOffset.x, step, fastStep))
       player->SetHandsOffset(handsOffset);
     ImGui::SameLine();
@@ -61,7 +61,7 @@ inline void Editor::Draw() {
     ImGui::PopItemWidth();
 
     ImGui::Text("Hands Rotation:");
-    ImGui::PushItemWidth(100);
+    ImGui::PushItemWidth(200);
     if (ImGui::InputFloat("X##handsRotation", &handsRotation.x, step, fastStep))
       player->SetHandsRotation(handsRotation);
     ImGui::SameLine();
@@ -71,10 +71,6 @@ inline void Editor::Draw() {
     if (ImGui::InputFloat("Z##handsRotation", &handsRotation.z, step, fastStep))
       player->SetHandsRotation(handsRotation);
     ImGui::PopItemWidth();
-
-    ImGui::Text("Smooth Factor:");
-    if (ImGui::SliderFloat("##SmoothFactor", &smoothFactor, 0.0f, 200.0f))
-      player->SetSmoothFactor(smoothFactor);
   }
   ImGui::End();
   rlImGuiEnd();
