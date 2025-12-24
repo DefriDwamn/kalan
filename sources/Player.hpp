@@ -13,8 +13,8 @@ private:
   raylib::Camera3D *camera;
   int speed;
 
-  raylib::Vector3 handsOffset = {-1.1f, -0.3f, 2.0f};
-  raylib::Vector3 handsRotation = {-10.0f, 0.0f, 0.0f};
+  raylib::Vector3 handsOffset = {-0.4f, 0.05f, 0.0f};
+  raylib::Vector3 handsRotation = {0.0f, 80.0f, 0.0f};
   raylib::Quaternion targetHandsRot = {0};
   raylib::Quaternion currHandsRot = {0};
   void UpdateHandsTransform();
