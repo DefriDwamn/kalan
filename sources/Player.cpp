@@ -8,6 +8,8 @@
 #include "raylib-cpp.hpp"
 #include "raylib.h"
 
+namespace kalan {
+
 Player::Player(std::shared_ptr<raylib::Model> handsModel,
                raylib::Camera3D *camera, raylib::Vector3 position, int speed)
     : handsModel(std::move(handsModel)), camera(camera), position(position),
@@ -73,3 +75,5 @@ void Player::Draw() {
     return;
   handsModel->Draw({0}, 1.0f, RED);
 }
+
+} // namespace kalan

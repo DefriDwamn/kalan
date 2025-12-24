@@ -6,6 +6,8 @@
 #include "raylib.h"
 #include "rlImGui.h"
 
+namespace kalan {
+
 class Editor {
 public:
   static Editor &GetInstance(Player *player = nullptr) {
@@ -75,3 +77,5 @@ inline void Editor::Draw() {
   ImGui::End();
   rlImGuiEnd();
 }
+
+} // namespace kalan

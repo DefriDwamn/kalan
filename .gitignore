@@ -2,6 +2,7 @@ build
 .cache/
 .helix/
 .clangd
+.vscode/
 
 assets
 third_party/*

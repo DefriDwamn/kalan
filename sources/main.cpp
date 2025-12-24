@@ -14,9 +14,9 @@ int main() {
 
   std::unique_ptr<raylib::Model> playerModel =
       std::make_unique<raylib::Model>(raylib::MeshUnmanaged::Cube(1., 1., 1.));
-  Player player(std::move(playerModel), &camera, {0.}, 10);
+  kalan::Player player(std::move(playerModel), &camera, {0.}, 10);
 
-  Editor &editor = Editor::GetInstance(&player);
+  kalan::Editor &editor = kalan::Editor::GetInstance(&player);
   SetExitKey(0);
 
   while (!window.ShouldClose()) {

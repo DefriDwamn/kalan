@@ -4,6 +4,8 @@
 #include "raylib-cpp.hpp"
 #include <memory>
 
+namespace kalan {
+
 class Player {
 private:
   raylib::Vector3 position;
@@ -33,3 +35,5 @@ public:
   void Draw();
   void Update();
 };
+
+} // namespace kalan
